@@ -1,0 +1,17 @@
+version: '3'
+services:
+  gerrit-review:
+    build: .
+    ports:
+      - "8080:8080"
+      - "29418:29418"
+    environment:
+      AUTH_TYPE: DEVELOPMENT_BECOME_ANY_ACCOUNT
+      GERRIT_ADMIN_USER: admin
+      GERRIT_ADMIN_EMAIL: admin@domain.com
+      GERRIT_ADMIN_FULLNAME: Administrator
+      GERRIT_ADMIN_PWD: password
+      GERRIT_ADMIN_PRIVATE_KEY: /home/gerrit/ssh-keys/id_admin_rsa
+      GERRIT_PUBLIC_KEYS_PATH: /home/gerrit/ssh-keys
+    volumes:
+      - ./keys:/home/gerrit/ssh-keys
