@@ -46,7 +46,7 @@ else
   # Copy our config files
   cp ${GERRIT_HOME}/configs/gerrit.config ${GERRIT_SITE}/etc/gerrit.config
   cp ${GERRIT_HOME}/configs/replication.config ${GERRIT_SITE}/etc/replication.config
-  
+
   # Configure Git Replication
   echo ">> Configure Git Replication & replace variables : GIT_SERVER_IP, GIT_SERVER_PORT, GIT_SERVER_USER, GIT_SERVER_PASSWORD & GIT_SERVER_PROJ_ROOT"
   sed -i  's/__GIT_SERVER_IP__/'${GIT_SERVER_IP}'/g' ${GERRIT_SITE}/etc/replication.config
@@ -58,16 +58,20 @@ else
   # Configure Gerrit
   echo ">> Configure Git Config and change AUTH_TYPE"
   sed -i  's/__AUTH_TYPE__/'${AUTH_TYPE}'/g' ${GERRIT_SITE}/etc/gerrit.config
-  
+
   # Regenerate the site but using now our add-user-plugin to import the users and their keys including also
   # the ssh public key for the admin user. Without the admin public key, it is not possible to ssh to the gerrit server
   # or to use the change-project-config plugin which issue a ssh command through the git client
+  echo ">> Init Gerrit - Batch"
   java -jar ${GERRIT_HOME}/$GERRIT_WAR init --batch --no-auto-start -d ${GERRIT_SITE}
-  
+
+  echo ">> Copy libs in"
+  cp ${GERRIT_TMP_LIB}/* ${GERRIT_LIB}/
+
   # Add a .gerrit-configured file
   echo "Add .gerrit-configured file"
   touch $GERRIT_SITE/.gerrit-configured
- 
+
 fi
 
 # Reset the gerrit_war variable as the path must be defined to the /home/gerrit/ directory
